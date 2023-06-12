@@ -86,7 +86,17 @@ declare const PHONE_ERROR: {
         msg: string;
         describe: string;
     };
-    NTO_FOUND_CALL_ID: {
+    NOT_FOUND_CALL_ID: {
+        code: number;
+        msg: string;
+        describe: string;
+    };
+    NOT_FOUND_AUDIO_INPUT_DEVICE: {
+        code: number;
+        msg: string;
+        describe: string;
+    };
+    NOT_FOUND_VIDEO_INPUT_DEVICE: {
         code: number;
         msg: string;
         describe: string;
@@ -641,6 +651,10 @@ declare class PBXOperator {
     cdrQuery: (params: {
         page: number;
         size: number;
+        status?: number;
+        sortBy?: 'time' | 'id';
+        orderBy?: 'desc' | 'asc';
+        filter?: string | null;
     }) => Promise<{
         [rest: string]: any;
         errcode: number;
