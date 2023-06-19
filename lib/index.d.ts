@@ -134,12 +134,18 @@ declare type TransferParentType = {
     holdDuration: number;
 };
 /**
+ * 通话状态静态数据属性
+ */
+interface StaticCallStatus {
+    name: string;
+    avatar: string;
+    company: string;
+}
+/**
  * 通话状态
  */
-interface CallStatus {
-    name: string;
+interface CallStatus extends StaticCallStatus {
     number: string;
-    avatar: string;
     callId: string;
     communicationType: 'outbound' | 'inbound';
     isVideo: boolean;
@@ -152,7 +158,6 @@ interface CallStatus {
     isTransfer: boolean;
     transferParent?: TransferParentType;
     isConference: boolean;
-    company: string;
 }
 /**
  * 通话质量统计对象
@@ -191,7 +196,7 @@ declare type TimerType = {
     callDuration: number;
     holdDuration: number;
 };
-declare type SessionEventType = 'peerconnection' | 'streamAdded' | 'confirmed' | 'accepted' | 'reinvite' | 'warningMessage' | 'sdp' | 'progress' | 'ended' | 'failed' | 'icecandidate' | 'newInfo' | 'statusChange' | 'updateTimer' | 'updateLocalStream' | 'updateRemoteStream' | 'callReport' | 'clientError';
+declare type SessionEventType = 'peerconnection' | 'streamAdded' | 'confirmed' | 'accepted' | 'reinvite' | 'warningMessage' | 'sdp' | 'progress' | 'ended' | 'failed' | 'icecandidate' | 'newInfo' | 'statusChange' | 'staticStatusChange' | 'updateTimer' | 'updateLocalStream' | 'updateRemoteStream' | 'callReport' | 'clientError';
 declare type AgreeChangeVideoParamsType = {
     callId: string;
     name: string;
@@ -324,6 +329,13 @@ declare class Session extends EventEmitter {
      * @param status
      */
     setStatus: (status: Partial<CallStatus>) => this;
+    /**
+     * 更新status静态数据
+     * @param staticStatus StaticCallStatus
+     * @param startManualModel 开启手动模式，为true后该通话的StaticCallStatus数据将不会自动更新，只能手动更新
+     * @returns
+     */
+    setStaticStatus: (staticStatus: Partial<StaticCallStatus>, startManualModel?: boolean | undefined) => this;
     /**
      * 销毁session
      */
@@ -551,6 +563,14 @@ declare class PhoneOperator extends EventEmitter {
      */
     getCurrentSession: () => Session | null;
     /**
+     * 更新session的status静态属性部分
+     * @param callId 通话id
+     * @param staticStatus 静态属性
+     * @param startManualModel 开启手动模式，设置true后将不会自动更新静态属性
+     * @returns
+     */
+    setSessionStaticStatus: (callId: string, staticStatus: Partial<StaticCallStatus>, startManualModel?: boolean | undefined) => boolean;
+    /**
      * 销毁Phone，解除所有已定阅的事件，停止ua实例
      */
     destroy: () => void;
@@ -677,6 +697,7 @@ interface InitParams {
     reRegistryPhoneTimes?: number;
     userAgent?: userAgentType;
     deviceIds?: deviceIdsType;
+    disableCallWaiting?: boolean;
 }
 /**
  * 初始化函数
