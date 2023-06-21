@@ -7,7 +7,7 @@ SDK提供 umd、cjs、esm、iife模块化格式，如果你注重sdk体积以及
 ## Install
 使用npm
 ```bash
-npm install webrtc-sdk-core
+npm install ys-webrtc-sdk-core
 ```
 使用script标签方式
 ```html
