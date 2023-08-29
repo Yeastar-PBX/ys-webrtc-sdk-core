@@ -9,7 +9,7 @@ The structure of the result object returned by the Yeastar WebRTC SDK is as show
 ```
 Subclass of Result: CommonResult, PBXResult, and PhoneResult.
 - CommonResult  
-    Success code range: 0 to 99 
+    Success code range: 0 to 99  
     Error code range:  -1 to -99
 - PBXResult  
     Success code range: 100 to 199  

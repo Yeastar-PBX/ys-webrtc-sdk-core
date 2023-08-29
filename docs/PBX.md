@@ -118,7 +118,7 @@ Returns: Null.
 | Event | Data | Description |
 | ---- | ---- | ---- |
 | runtimeError | PBXResult | Triggered when a runtime error occurs. See below. |
-| cdrChange | [cdrNotifyData](#cdr-notify-data) | CDR update notification. When triggered, you should query CDR again. |
+| cdrChange | [cdrNotifyData](#user-content-cdrnotifydata) | CDR update notification. When triggered, you should query CDR again. |
 
 Example:
 ```ts

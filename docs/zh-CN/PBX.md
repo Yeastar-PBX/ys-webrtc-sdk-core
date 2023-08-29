@@ -111,7 +111,7 @@ destroy()
 | 事件名 | Data | 描述 |
 | ---- | ---- | ---- |
 | runtimeError | PBXResult | 运行时错误. 有可能发生的错误见下方 Runtime Error。 |
-| cdrChange | [cdrNotifyData](#cdr-notify-data) | CDR 更新通知。该事件触发时需要手动调用cdr查询方法。 |
+| cdrChange | [cdrNotifyData](#user-content-cdrnotifydata) | CDR 更新通知。该事件触发时需要手动调用cdr查询方法。 |
 
 示例:
 ```ts
