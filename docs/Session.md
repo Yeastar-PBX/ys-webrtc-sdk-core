@@ -40,25 +40,25 @@
 stopTimer()
 Stop the call timer.
 
-Request parameters: Null.
+Params: Null.
 
-Response parameters: `this`. 
+Returns: `this`. 
 ****
 
 <a name="session-on"></a>
 on(eventName:string,listener: (...args: any[]) => void)
 Listen for specific events.
 
-Request parameters: `eventName` (The event name), `listener` (Callback function).
+Params: `eventName` (The event name), `listener` (Callback function).
 
-Response parameters: Null.
+Returns: Null.
 ****
 <a name="session-reject"></a>
 reject() 
 
 Reject the call, which is equivalent to the `reject` method of the **phone** object.
 
-Request parameters: Null.
+Params: Null.
 
 Response parameter type: `boolean`.
 ****
@@ -67,16 +67,16 @@ answer(option?: CallOptions)
 
 Answer the call, which is equivalent to the `answer` method of the **phone** object.
 
-Request parameters: `option` (`userMedia` constraints).
+Params: `option` (`userMedia` constraints).
 
-Response parameters: `Promise<Result>`.
+Returns: `Promise<Result>`.
 ****
 <a name="session-hangup"></a>
 hangup() 
 
 Hang up the call, which is equivalent to the `hangup` method of the **phone** object.
 
-Request parameters: `callId` (The unique ID of each call).
+Params: `callId` (The unique ID of each call).
 
 Response parameter type: `boolean`.
 ****
@@ -85,7 +85,7 @@ blindTransfer(number: string)
 
 Perform a blind transfer, which is equivalent to the `blindtransfer` method of the **phone** object.
 
-Request parameters: `number` (The phone/extension number of the transfer target).
+Params: `number` (The phone/extension number of the transfer target).
 
 Response parameter type: `boolean`
 ****
@@ -94,7 +94,7 @@ attendedTransfer(number: string)
 
 Perform an attended transfer, which is equivalent to the `attendedTransfer` method of the **phone** object.
 
-Request parameters: `number` (The phone/extension number of the transfer target).
+Params: `number` (The phone/extension number of the transfer target).
 
 Response parameter type: `boolean`.
 ****
@@ -103,7 +103,7 @@ hold()
 
 Hold the call, which is equivalent to the `hold` method of the **phone** object.
 
-Request parameters: Null.
+Params: Null.
 
 Response parameter type: `boolean`.
 ****
@@ -112,7 +112,7 @@ unhold()
 
 Unhold the call, which is equivalent to the `unhold` method of the **phone** object.
 
-Request parameters: Null.
+Params: Null.
 
 Response parameter type: `boolean`.
 ****
@@ -121,7 +121,7 @@ dtmf(dtmf: string)
 
 Send DTMF.
 
-Request parameters: `callId` (The unique ID of each call), `DTMF string (0123456789*#)` (Equivalent to the `dtmf` method of the **phone** object).
+Params: `callId` (The unique ID of each call), `DTMF string (0123456789*#)` (Equivalent to the `dtmf` method of the **phone** object).
 
 Response parameter type: `boolean`.
 ****
@@ -130,7 +130,7 @@ mute()
 
 Mute the call, which is equivalent to the `mute` method of the **phone** object.
 
-Request parameters: Null.
+Params: Null.
 
 Response parameter type: `boolean`.
 ****
@@ -139,7 +139,7 @@ unmute()
 
 Unmute the call, which is equivalent to the `unmute` method of the **phone** object.
 
-Request parameters: Null.
+Params: Null.
 
 Response parameter type: `boolean`.
 ****
@@ -148,7 +148,7 @@ startRecord()
 
 Start recording, which is equivalent to the `startRecord` method of the **phone** object.
 
-Request parameters: Null.
+Params: Null.
 
 Response parameter type: `boolean`.
 ****
@@ -157,7 +157,7 @@ pauseRecord()
 
 Pause the recording, which is equivalent to the `pauseRecord` method of the **phone** object.
 
-Request parameters: Null.
+Params: Null.
 
 Response parameter type: `boolean`.
 ****
@@ -166,7 +166,7 @@ terminate(type: 'hangup' | 'reject' | 'terminate' = 'terminate')
 
 Terminate the call, which is equivalent to the `terminate` method of the **phone** object.
 
-Request parameters: `type` (Types of call termination).
+Params: `type` (Types of call termination).
 
 Response parameter type: `boolean`.
 ****
@@ -175,27 +175,27 @@ setStatus(status: Partial&lt;CallStatus&gt;)
 
 Update the call status.
 
-Request parameters: `status` (The call status).
+Params: `status` (The call status).
 
-Response parameters: `this`.
+Returns: `this`.
 ****
 <a name="session-setStaticStatus"></a>
 setStaticStatus(staticStatus: Partial&lt;StaticCallStatus&gt;, startManualModel?: boolean) 
 
 Update the static data for call status.
 
-Request parameters: `staticStatus` (Static attributes), `startManualModel` (Enable manual mode. When this value is set as `true`, static attributes will not be automatically updated ).
+Params: `staticStatus` (Static attributes), `startManualModel` (Enable manual mode. When this value is set as `true`, static attributes will not be automatically updated ).
 
-Response parameters: `this`.
+Returns: `this`.
 ****
 <a name="session-destroy"></a>
 destroy() 
 
 Destroy the session, cancel all the event subscriptions, and stop the  RTCSession.
 
-Request parameters: Null.
+Params: Null.
 
-Response parameters: Null.
+Returns: Null.
 ****
 ## Events
 
