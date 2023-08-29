@@ -127,7 +127,7 @@ PBXOperator 对象包含PBX的相关方法和属性，如：查询cdr。
 
 ## 铃声资源
 
-文件见 **[assets]('./assets')** 目录。
+文件见 **[assets](./assets/)** 目录。
 铃声资源以两种形式提供：一是音频原文件，二是base64编码后的字符串。
 | name | describe |
 | ---- | ---- |
