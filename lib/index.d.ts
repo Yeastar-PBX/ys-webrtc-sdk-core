@@ -30,6 +30,63 @@ declare const COMMON_SUCCESS: {
         describe: string;
     };
 };
+declare const PBX_ERROR: {
+    UNKNOWN_ERROR: {
+        code: number;
+        msg: string;
+        describe: string;
+    };
+    REGISTRY_FAILED: {
+        code: number;
+        msg: string;
+        describe: string;
+    };
+    PBX_NETWORK_ERROR: {
+        code: number;
+        msg: string;
+        describe: string;
+    };
+    PBX_API_ERROR: {
+        code: number;
+        msg: string;
+        describe: string;
+    };
+    GET_PERSONAL_NOT_FOUND_DATA: {
+        code: number;
+        msg: string;
+        describe: string;
+    };
+    PBX_ALREADY_INITIALIZED: {
+        code: number;
+        msg: string;
+        describe: string;
+    };
+    LINKUS_DISABLED: {
+        code: number;
+        msg: string;
+        describe: string;
+    };
+    LOGGED_IN_ELSEWHERE: {
+        code: number;
+        msg: string;
+        describe: string;
+    };
+    EXTENSION_DELETED: {
+        code: number;
+        msg: string;
+        describe: string;
+    };
+    RE_LOGIN: {
+        code: number;
+        msg: string;
+        describe: string;
+    };
+    SDK_PLAN_DISABLED: {
+        code: number;
+        msg: string;
+        describe: string;
+    };
+};
 declare const PHONE_ERROR: {
     UNKNOWN_ERROR: {
         code: number;
@@ -102,6 +159,13 @@ declare const PHONE_ERROR: {
         describe: string;
     };
 };
+declare const PHONE_SUCCESS: {
+    SUCCESS: {
+        code: number;
+        msg: string;
+        describe: string;
+    };
+};
 
 declare type ResultBaseType = {
     [rest: string]: {
@@ -115,6 +179,8 @@ declare type KeysToUnion<T extends object> = {
 }[keyof T];
 declare type CommonErrorKeys = KeysToUnion<typeof COMMON_ERROR>;
 declare type CommonSuccessKeys = KeysToUnion<typeof COMMON_SUCCESS>;
+declare type PBXErrorKeys = KeysToUnion<typeof PBX_ERROR>;
+declare type PhoneSuccessKeys = KeysToUnion<typeof PHONE_SUCCESS>;
 declare class Result {
     code: number;
     message: string;
@@ -123,6 +189,10 @@ declare class Result {
 declare class CommonResult {
     static error(type: CommonErrorKeys): Result;
     static success(type: CommonSuccessKeys): Result;
+}
+declare class PBXResult {
+    static error(type: PBXErrorKeys): Result;
+    static success(type: PhoneSuccessKeys): Result;
 }
 
 declare type TransferParentType = {
@@ -639,7 +709,8 @@ declare type PhoneConfigInfo = {
     registername: string;
     recordPermissions: number;
 };
-declare class PBXOperator {
+declare type PbxEventType = 'runtimeError' | 'cdrChange';
+declare class PBXOperator extends EventEmitter {
     #private;
     secret: string;
     username: string;
@@ -687,6 +758,13 @@ declare class PBXOperator {
         errcode: number;
         errmsg: string;
     }>;
+    /**
+     * pbx 事件监听
+     * @param eventName
+     * @param listener
+     * @returns
+     */
+    on: (eventName: PbxEventType, listener: (error: PBXResult) => void) => this;
 }
 
 interface InitParams {
