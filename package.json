@@ -1,6 +1,6 @@
 {
   "name": "ys-webrtc-sdk-core",
-  "version": "1.0.13",
+  "version": "1.0.14",
   "description": "Yeastar WebRTC SDK for P-Series PBX.",
   "main": "lib/index.js",
   "types": "lib/index.d.ts",
