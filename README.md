@@ -91,7 +91,7 @@ init({
         });
 
         // Listen for Incoming call events.
-        phone.on('incoming', (callId,session)=>{
+        phone.on('incoming', ({callId,session})=>{
             const {status} = session
             // Pop up an incoming call dialog displaying the caller's phone number and contact name on the User interface.
             // ...

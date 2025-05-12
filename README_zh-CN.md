@@ -51,7 +51,7 @@ npm install ys-webrtc-sdk-core
 下面用简化后的代码展现一个呼出和接听的大体流程。
 
 ```js
-import { init, on } from 'ys-webrtc-sdk-core';
+import { init } from 'ys-webrtc-sdk-core';
 
 init({
     username: '1000',
@@ -87,7 +87,7 @@ init({
         });
 
         // 来电事件
-        phone.on('incoming', (callId,session)=>{
+        phone.on('incoming', ({callId,session})=>{
             const {status} = session
             // 界面弹出来电框，呈现来电号码，联系人名字
             // ...
