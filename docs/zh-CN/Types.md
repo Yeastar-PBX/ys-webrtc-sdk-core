@@ -1,7 +1,17 @@
 # 其他类型、对象、接口
 
 介绍sdk中使用到的类型、对象、接口。
+## CallOptions
 
+通话选项
+
+``` ts
+type CallOptions = {
+    video?: boolean; // 是否为视频通话
+    offerToReceiveVideo?: boolean; // 是否接收对端视频
+    extraHeaders?: string[]; // 额外的sip请求头
+};
+```
 ## Report
 
 通话质量报告对象
@@ -84,6 +94,38 @@ type TimerType = {
     callingDuration: number; // 呼叫中时长：外呼到对方接起的时长
     callDuration: number; // 通话中时长
     holdDuration: number; // 保持时长
+}
+```
+## AgreeChangeVideoParamsType
+```ts
+type AgreeChangeVideoParamsType = { callId: string; name: string };
+```
+
+## agreeChangeVideo Usage
+如果需要在通话中同意切换成视频通话，可以使用`agreeChangeVideo`方法。
+```ts
+session.agreeChangeVideo = (inviteInfo: AgreeChangeVideoParamsType) => {
+    return new Promise<boolean>((resolve) => {
+        // 这里可以添加逻辑来决定是否同意切换成视频通话
+        const userAgrees = Modal.confirm({
+            title: '切换成视频通话',
+            content: `${inviteInfo.name}邀请您切换成视频通话，是否同意？ `,
+            onOk: () => {
+                // 用户同意切换成视频通话
+                resolve(true);
+            },
+            onCancel: () => {
+                // 用户拒绝切换成视频通话
+                resolve(false);
+            }
+        });
+        setTimeout(() => {
+            // 关闭 modal
+            userAgrees.close();
+            // 如果用户在10秒内没有做出选择，则默认拒绝
+            resolve(false); 
+        }, 10 * 1000);
+    });
 }
 ```
 

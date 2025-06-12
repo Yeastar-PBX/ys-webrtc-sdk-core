@@ -12,11 +12,16 @@ The PhoneOperator is an object used for call management, which contains the attr
 | sessions | Map<string, Session> | Caching `Map` object for call sessions, with the `callId` as the key. |
 | currentSession | Session | Current call session. |
 | isRegistered | boolean | Whether the registration was successful. |
+| extraHeaders | string[] | Additional SIP request headers. |
+| videoPlan | string | Get video plan status. |
 | recordPermissions | number | Permission for call recording:<br /> `0`: No permission, `1`: Pause/Resume recording, `2`: Start/Pause/Resume recording. |
 | incomingList | session[] | The list of the incoming calls. |
+| isNoneCamera | boolean | Whether there is no camera. |
 | isMaxCall | boolean | Whether it reaches the maximum number of concurrent calls (2 concurrent calls). |
 
-## Methods
+## Methods and Events
+<details open>
+<summary><strong>Methods</strong></summary>
 
 - [on](#phone-on)
 - [start](#phone-start)
@@ -35,6 +40,9 @@ The PhoneOperator is an object used for call management, which contains the attr
 - [startRecord](#phone-startRecord)
 - [pauseRecord](#phone-pauseRecord)
 - [terminate](#phone-terminate)
+- [renegotiate](#phone-renegotiate)
+- [audioToVideo](#phone-audioToVideo)
+- [videoToAudio](#phone-videoToAudio)
 - [disconnect](#phone-disconnect)
 - [getSession](#phone-getSession)
 - [setCurrentSession](#phone-setCurrentSession)
@@ -44,280 +52,275 @@ The PhoneOperator is an object used for call management, which contains the attr
 ****
 <a name="phone-on"></a>
 on(eventName:string,listener: (...args: any[]) => void)
-Listen for specific events.
+> Listen for specific events.
 
-Request parameters: `eventName` (The event name), `listener` (Callback function).
+Params: `eventName` (The event name), `listener` (Callback function).
 
-Response parameters: Null.
+Returns: Null.
 ****
 <a name="phone-start"></a>
 start() 
+> Start registering SIP UA. After the registration succeeds, UA can make and receive calls. 
 
-Start registering SIP UA. After the registration succeeds, UA can make and receive calls. 
+> **Note**: Listen for desired events before registering SIP UA, otherwise, some events may be missed.
 
-**Note**: Listen for desired events before registering SIP UA, otherwise, some events may be missed.
+Params: Null.
 
-Request parameters: Null.
-
-Response parameters: Null.
+Returns: Null.
 ****
 <a name="phone-reRegister"></a>
 reRegister(authorizationUser: string, ha1: string) 
+> Re-register SIP UA.
 
-Re-register SIP UA.
+> **Note**: Use this method within the 'phone' instance only to avoid unexpected situations.
 
-**Note**: Use this method within the 'phone' instance only to avoid unexpected situations. 
+Params: `authorizationUser` (User name), `ha1` (Login password).
 
-Request parameters: `authorizationUser` (User name), `ha1` (Login password).
-
-Response parameters: `this`.
+Returns: `this`.
 ****
 <a name="phone-call"></a>
 call(number: string, option?: CallOptions, transferId?: string) 
+> Make an outgoing call. When there is a `transferId` provided, then PBX performs an attented transfer.
 
-Make an outgoing call.
+> **Note**: This method is an asynchronous function.
 
-When there is a `transferId` provided, then PBX performs an attented transfer.
+Params: `number ` (Phone number or extension number), `option` ([Call Options](./Types.md#calloptions)), `transferId ` (ID of the attended transfer call).
 
-**Note**: This method is an asynchronous function.
-
-Request parameters: `number ` (Phone number or extension number), `option` (`userMedia` constraints), `transferId ` (ID of the attended transfer call).
-
-Response parameters: `Promise<Result>`.
+Returns: `Promise<Result>`.
 ****
 <a name="phone-reject"></a>
 reject(callId: string) 
+> Reject the call.
 
-Reject the call.
+Params: `callId` (The unique ID of each call).
 
-Request parameters: `callID` (The unique ID of each call).
-
-Response parameter type: `boolean`. 
+Returns: `boolean`.
 ****
 <a name="phone-answer"></a>
-answer(callId: string, option?: CallOptions) 
+answer(callId: string, option?: CallOptions, allowNoneCamera: boolean = true) 
+> Answer the call.
 
-Answer the call.
+Params: `callId` (The unique ID of each call), `option` ([Call Options](./Types.md#calloptions)), `allowNoneCamera` (Whether to allow answering without a camera).
 
-Request parameters: `callID` (The unique ID of each call), `option` (`userMedia` constraints).
-
- Response parameters: `Promise<Result>`.
+Returns: `Promise<Result>`.
 ****
 <a name="phone-hangup"></a>
 hangup(callId: string) 
+> Hang up the call. 
 
-Hang up the call. 
+Params: `callId` (The unique ID of each call).
 
-Request parameters: `callId` (The unique ID of each call).
-
-Response parameter type: `boolean`.
+Returns: `boolean`.
 ****
 <a name="phone-blindTransfer"></a>
 blindTransfer(callId: string, number: string) 
+> Perform a blind transfer.
 
-Perform a blind transfer.
+Params: `callId` (The unique ID of each call), `number` (The phone/extension number of the transfer target).
 
-Request parameters: `callId` (The unique ID of each call), `number` (The phone/extension number of the transfer target).
-
-Response parameter type: `boolean`.
+Returns: `boolean`.
 ****
 <a name="phone-attendedTransfer"></a>
 attendedTransfer(callId: string, number: string) 
+> Perform an attended transfer. 
 
-Perform an attended transfer. 
+Params: `callId` (The unique ID of each call), `number` (The phone/extension number of the transfer target).
 
-Request parameters: `callId` (The unique ID of each call), `number` (The phone/extension number of the transfer target).
-
-Response parameter type: `boolean`.
+Returns: `boolean`.
 ****
 <a name="phone-hold"></a>
 hold(callId: string) 
+> Hold the call.
 
-Hold the call.
+Params: `callId` (The unique ID of each call).
 
-Request parameters: `callId` (The unique ID of each call).
-
-Response parameter type: `boolean`.
+Returns: `boolean`.
 ****
 <a name="phone-unhold"></a>
 unhold(callId: string) 
+> Unhold the call.
 
-Unhold the call.
+Params: `callId` (The unique ID of each call).
 
-Request parameters: `callId` (The unique ID of each call).
-
-Response parameter type: `boolean`.
+Returns: `boolean`.
 ****
 <a name="phone-dtmf"></a>
 dtmf(callId: string, dtmf: string) 
+> Send DTMF.
 
-Send DTMF.
+Params: `callId` (The unique ID of each call), `dtmf` (DTMF string: 0123456789*#).
 
-Request parameters: `callId` (The unique ID of each call), `DTMF string (0123456789*#)`.
-
-Response parameter type: `boolean`.
+Returns: `boolean`.
 ****
 <a name="phone-mute"></a>
 mute(callId: string) 
+> Mute the call.
 
-Mute the call.
+Params: `callId` (The unique ID of each call).
 
-Request parameters: `callId` (The unique ID of each call).
-
-Response parameter type: `boolean`.
+Returns: `boolean`.
 ****
 <a name="phone-unmute"></a>
 unmute(callId: string) 
+> Unmute the call.
 
-Unmute the call.
+Params: `callId` (The unique ID of each call).
 
-Request parameters: `callId` (The unique ID of each call).
-
-Response parameter type: `boolean`.
+Returns: `boolean`.
 ****
 <a name="phone-startRecord"></a>
 startRecord(callId: string) 
+> Start recording.
 
-Start recording.
+Params: `callId` (The unique ID of each call).
 
-Request parameters: `callId` (The unique ID of each call).
-
-Response parameter type: `boolean`.
+Returns: `boolean`.
 ****
 <a name="phone-pauseRecord"></a>
 pauseRecord(callId: string) 
+> Pause the recording.
 
-Pause the recording.
+Params: `callId` (The unique ID of each call).
 
-Request parameters: `callId` (The unique ID of each call).
-
-Response parameter type: `boolean`.
+Returns: `boolean`.
 ****
 <a name="phone-terminate"></a>
 terminate(callId: string, type: 'hangup' | 'reject' | 'terminate' = 'terminate') 
+> Terminate the call.
 
-Terminate the call.
+Params: `callId` (The unique ID of each call), `type` (Types of call termination).
 
-Request parameters: `callId` (The unique ID of each call), `type` (Types of call termination).
+Returns: `boolean`.
+****
+<a name="phone-renegotiate"></a>
+renegotiate(callId: string, offerToReceiveVideo?: boolean) 
+> Renegotiate the call.  
 
-Response parameter type: `boolean`.
+Params: `callId` (The unique ID of each call), `offerToReceiveVideo` (Whether to receive video).
+
+Returns: boolean。
+****
+<a name="phone-audioToVideo"></a>
+audioToVideo(callId: string, allowNoneCamera: boolean = true) 
+> Audio renegotiate to video.
+
+Params: `callId` (The unique ID of each call), `allowNoneCamera` (Whether to allow without a camera).
+
+Returns: `Promise<Result>`。
+****
+<a name="phone-videoToAudio"></a>
+videoToAudio(callId: string) 
+> Video renegotiate to audio.
+
+Params: `callId` (The unique ID of each call).
+
+Returns: `boolean`. 
 ****
 <a name="phone-disconnect"></a>
 disconnect() 
+> Disconnect the SIP UA.
 
-Disconnect the SIP UA.
+Params: Null.
 
-Request parameters: Null.
-
-Response parameter type: `boolean`.
+Returns: `boolean`.
 ****
 <a name="phone-getSession"></a>
 getSession() 
+> Retrieve the sessions and return them as an array.
 
-Retrieve the sessions and return them as an array.
+Params: Null.
 
-Request parameters: Null.
-
-Response parameter type: `boolean`.
+Returns: `boolean`.
 ****
 <a name="phone-setCurrentSession"></a>
 setCurrentSession(callId: string) 
+> Set the `currentSession`.
 
-Set the `currentSession`.
+Params: `callId` (The unique ID of each call).
 
-Request parameters: `callId` (The unique ID of each call).
-
-Response parameter type: `boolean`.
+Returns: `boolean`.
 ****
 <a name="phone-getCurrentSession"></a>
 getCurrentSession() 
+> Retrieve the current session.
 
-Retrieve the current session.
+Params: Null.
 
-Request parameters: Null.
-
-Response parameters: `Session`.
+Returns: `Session`.
 ****
 <a name="phone-setSessionStaticStatus"></a>
 setSessionStaticStatus(callId: string, staticStatus: Partial&lt;StaticCallStatus&gt;, startManualModel?: boolean) 
+> Update the static data for call status, which includes 'name', 'avatar', and 'company'. For more information, see the interface **StaticCallStatus** in [Types](Types.md).
 
-Update the static data for call status, which includes 'name', 'avatar', and 'company'. For more information, see the interface **StaticCallStatus** in [Types](Types.md).
+Params: `callId` (The unique ID of each call), `staticStatus` (Static attributes), and `startManualModel` (Enable manual mode. When this value is set as `true`, static attributes will not be automatically updated ).
 
-Request parameters: `callId` (The unique ID of each call), `staticStatus` (Static attributes), and `startManualModel` (Enable manual mode. When this value is set as `true`, static attributes will not be automatically updated ).
-
-Response parameter type: `boolean`.
+Returns: `boolean`.
 ****
 <a name="phone-destroy"></a>
 destroy() 
+> Destroy the phone object, cancel all the event subscriptions, stop the  SIP UA instance, and delete all the sessions.
 
-Destroy the phone object, cancel all the event subscriptions, stop the  SIP UA instance, and delete all the sessions.
+Params: Null.
 
-Request parameters: Null.
-
-Response parameters: Null.
+Returns: Null.
 ****
-## Events
+</details>
+
+<details open>
+<summary><strong>Events</strong></summary>
 
 connected 
+> Connected to the SIP service.
 
-Connected to the SIP service.
-
-Report parameters: Null.
+Params: Null.
 ****
 
 disconnected 
+> Disconnected the SIP service.
 
-Disconnected the SIP service.
-
-Report parameters: Null.
+Params: Null.
 ****
 registered 
+> SIP UA registration succeeded.
 
-SIP UA registration succeeded.
-
-Report parameters: Null.
+Params: Null.
 ****
 
 registrationFailed 
+> SIP UA registration failed.
 
-SIP UA registration failed.
-
-Report parameters: Error messages.
+Params: Error messages.
 ****
 newRTCSession 
+> A new session instance is created.
 
-A new session instance is created.
-
-Report parameters: `{callId: string, session: Session}`.
+Params: `{callId: string, session: Session}`.
 ****
 incoming 
+> There is an incoming call.
 
-There is an incoming call.
-
-Report parameters: `{callId: string, session: Session}`.
+Params: `{callId: string, session: Session}`.
 ****
 startSession 
+> A session is added to the 'sessions' property of PhoneOperator.
 
-A session is added to the 'sessions' property of PhoneOperator.
-
-Report parameters: `{callId: string, session: Session}`.
+Params: `{callId: string, session: Session}`.
 ****
-recordPermissionsChange 
+recordPermissionsChange
+> The recording permission is changed.
 
-The recording permission is changed. 
-
-Report parameters: Recording permission value.
+Params: Recording permission value.
 ****
 deleteSession
-A session is deleted.
+> A session is deleted.
 
-Report parameters: `{callId: string; cause: string }`.
+Params: `{callId: string; cause: string }`.
 ****
-isRegisteredChange 
+isRegisteredChange
+> The SIP UA registration status is changed.
 
-The SIP UA registration status is changed.
-
-Report parameters: `boolean` (Registration status).
+Params: `boolean` (Registration status).
 ****
+</details>
 
 For more information about the Session object, see [Session](./Session.md).

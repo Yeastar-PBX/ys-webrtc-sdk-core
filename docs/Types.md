@@ -1,6 +1,17 @@
 # Other Types, Objects, and Interfaces
 
 This topic introduces the types, objects, and interfaces within the Yeastar WebRTC SDK. 
+## CallOptions
+
+Call options for answering or making a call.
+
+```ts
+type CallOptions = {
+    video?: boolean; // Whether it is a video call.
+    offerToReceiveVideo?: boolean; // Whether to receive video from the other party.
+    extraHeaders?: string[]; // Additional SIP request headers.
+};
+```
 
 ## Report
 
@@ -84,6 +95,38 @@ type TimerType = {
     callingDuration: number; // The time between the caller dialing the call and the callee answering the call.
     callDuration: number; // The time between the call answered and the call ended. 
     holdDuration: number; // The duration of the call being held.
+}
+```
+## AgreeChangeVideoParamsType
+```ts
+type AgreeChangeVideoParamsType = { callId: string; name: string };
+```
+
+## agreeChangeVideo Usage
+If you need to agree to switch to a video call during an ongoing call, you can use the `agreeChangeVideo` method. 
+```ts
+session.agreeChangeVideo = (inviteInfo: AgreeChangeVideoParamsType) => {
+    return new Promise<boolean>((resolve) => {
+        // Here you can add logic to decide whether to agree to switch to a video call
+        const userAgrees = Modal.confirm({
+            title: 'Switch to Video Call',
+            content: `${inviteInfo.name} invites you to switch to a video call. Do you agree?`,
+            onOk: () => {
+                // User agrees to switch to video call
+                resolve(true);
+            },
+            onCancel: () => {
+                // User rejects switching to video call
+                resolve(false);
+            }
+        });
+        setTimeout(() => {
+            // Close modal
+            userAgrees.close();
+            // If the user does not make a choice within 10 seconds, it defaults to rejection
+            resolve(false);
+        }, 10 * 1000);
+    });
 }
 ```
 
