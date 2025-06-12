@@ -15,17 +15,19 @@ This topic introduces the parameters and query methods of the PBXOperator object
 | extensionId | string | Extension ID. |
 | extensionName | string | Extension name. |
 
-## Methods
+## Methods and Events
+<details open>
+<summary><strong>Methods</strong></summary>
 
 init() 
-
-The initialization method is used within the Yeastar WebRTC SDK. After the initialization succeeds, subsequent calls to `init()` will return a `Promise.reject()`.  
+> The initialization method is used within the Yeastar WebRTC SDK. After the initialization succeeds, subsequent calls to `init()` will return a `Promise.reject()`.  
 
 Params: Null.
 
-Return: `Promise<Result>`.
+Returns: `Promise<Result>`.
 ****
-on(eventName, callback)Listen for specific events.
+on(eventName, callback)
+> Listen for specific events.
 
 Params: `eventName` (The event name), `listener` (Callback function).
 
@@ -33,8 +35,7 @@ Returns: Null.
 
 ****
 cdrQuery(params) 
-
-Query the CDR.
+> Query the CDR.
 
 Params:
 ``` ts
@@ -98,27 +99,28 @@ Returns descriptions:
 ```
 ****
 logout() 
-
-Log out.
+> Log out.
 
 Params: Null.
 
 Returns: `Promise`.
 ****
 destroy()
-
-Destroy the 'PBXOperator' object.
+> Destroy the 'PBXOperator' object.
 
 Params: Null.
 
-Returns: Null.
+Returns: `void`.
 ****
+</details>
 
-## Events
-| Event | Data | Description |
+<details open>
+<summary><strong>Events</strong></summary>
+
+| Event name | Data | Description |
 | ---- | ---- | ---- |
-| runtimeError | PBXResult | Triggered when a runtime error occurs. See below. |
 | cdrChange | [cdrNotifyData](#user-content-cdrnotifydata) | CDR update notification. When triggered, you should query CDR again. |
+| runtimeError | PBXResult | Triggered when a runtime error occurs. See below. |
 
 Example:
 ```ts
@@ -152,3 +154,5 @@ The error details are provided below:
 | -108 | EXTENSION_DELETED | The extension has been deleted. |
 | -109 | RE_LOGIN | You need to log in again.                                    |
 | -110 | SDK_PLAN_DISABLED | The SDK plan is disabled.                 |
+
+</details>

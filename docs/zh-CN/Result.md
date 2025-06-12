@@ -10,13 +10,13 @@ sdk返回的结果对象，其结构为：
 Result的子类：CommonResult、PBXResult、PhoneResult。
 - CommonResult  
     正确代码范围 0 至 99  
-    错误代码访问 -1 至 -99
+    错误代码范围 -1 至 -99
 - PBXResult  
     正确代码范围 100 至 199  
-    错误代码访问 -100 至 -199
+    错误代码范围 -100 至 -199
 - PhoneResult  
     正确代码范围 200 至 299  
-    错误代码访问 -200 至 -299
+    错误代码范围 -200 至 -299
 
 ## CommonResult
 

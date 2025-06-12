@@ -13,9 +13,13 @@
 | extensionId | string | 分机id |
 | extensionName | string | 分机名 |
 
-## 方法
+## 方法和事件
+<details open>
+<summary><strong>方法</strong></summary>
 
-init() 初始化方法，sdk内部会调用，初始化成功后再次调用会返回Promise.reject。
+init() 
+> 初始化方法，sdk内部会调用，初始化成功后再次调用会返回Promise.reject。
+
 参数列表: 空。
 
 返回值：Promise&lt;Result&gt;。
@@ -23,15 +27,15 @@ init() 初始化方法，sdk内部会调用，初始化成功后再次调用会�
 ****
 
 on(eventName, listener)
-
-监听事件方法。
+> 监听事件方法。
 
 参数列表：eventName 事件名，listener回调函数 。
 
-返回值：空。
+返回值：void。
 
 ****
-cdrQuery(params) 查询cdr方法。
+cdrQuery(params) 
+> 查询cdr方法。
 
 参数列表:
 ``` ts
@@ -94,24 +98,29 @@ params: {
 }
 ```
 ****
-logout() 登出方法
+logout() 
+> 登出方法
 
 参数列表: 空。
 
 返回值：Promise。
 ****
 destroy()
+> 销毁方法，销毁PBXOperator实例。
 
 参数列表: 空。
 
-返回值：空。
+返回值：void。
 ****
+</details>
 
-## 事件
+<details open>
+<summary><strong>事件</strong></summary>
+
 | 事件名 | Data | 描述 |
 | ---- | ---- | ---- |
-| runtimeError | PBXResult | 运行时错误. 有可能发生的错误见下方 Runtime Error。 |
 | cdrChange | [cdrNotifyData](#user-content-cdrnotifydata) | CDR 更新通知。该事件触发时需要手动调用cdr查询方法。 |
+| runtimeError | PBXResult | 运行时错误. 有可能发生的错误见下方 Runtime Error。 |
 
 示例:
 ```ts
@@ -143,3 +152,5 @@ PBXOperator内部会抛出运行时错误，通过on方法监听，事件名 "ru
 | -108 | EXTENSION_DELETED | 分机被删除了 |
 | -109 | RE_LOGIN | 重新登录 |
 | -110 | SDK_PLAN_DISABLED | sdk plan未启用 |
+
+</details>
