@@ -1,6 +1,8 @@
 import { EventEmitter } from 'events';
 import { RTCSession } from 'jssip/lib/RTCSession';
 
+declare type userAgent = 'WebPC' | 'WebClient';
+
 declare const COMMON_ERROR: {
     UNKNOWN_ERROR: {
         code: number;
@@ -144,6 +146,11 @@ declare const PHONE_ERROR: {
         describe: string;
     };
     NOT_FOUND_CALL_ID: {
+        code: number;
+        msg: string;
+        describe: string;
+    };
+    RENEGOTIATE_FAILED: {
         code: number;
         msg: string;
         describe: string;
@@ -331,8 +338,9 @@ declare class Session extends EventEmitter {
     /**
      * 接听
      * @param option
+     * @param allowNoneCamera 允许无摄像头接听视频电话
      */
-    answer: (option?: CallOptions | undefined) => Promise<Result>;
+    answer: (option?: CallOptions | undefined, allowNoneCamera?: boolean) => Promise<Result>;
     /**
      * 挂断
      */
@@ -351,12 +359,12 @@ declare class Session extends EventEmitter {
      * 保持
      * @returns
      */
-    hold: () => boolean;
+    hold: () => void;
     /**
      * 解除保持
      * @returns
      */
-    unhold: () => boolean;
+    unhold: () => void;
     /**
      * 发送dtmf
      * @param dtmf
@@ -392,8 +400,13 @@ declare class Session extends EventEmitter {
      * @returns 是否操作成功
      */
     renegotiate: (offerToReceiveVideo?: boolean | undefined) => boolean;
-    audioToVideo: (mediaStream?: MediaStream | undefined) => void;
-    videoToAudio: () => void;
+    /**
+     * 音频转视频
+     * @param allowNoneCamera 允许无摄像头，进行单方面视频通话
+     * @returns
+     */
+    audioToVideo: (allowNoneCamera?: boolean) => Promise<Result>;
+    videoToAudio: () => boolean;
     /**
      * 更新call status
      * @param status
@@ -412,15 +425,15 @@ declare class Session extends EventEmitter {
     destroy: () => void;
 }
 
-declare type userAgentType = 'WebPC' | 'WebClient';
 interface PhoneConfig {
-    id: string;
+    id?: string;
     host: URL;
     number: string;
     ha1: string;
     realm: string;
     registername: string;
-    userAgent?: userAgentType;
+    registerExpress?: number;
+    userAgent?: userAgent;
     jsSIPDebug?: 'JsSIP:*' | string;
 }
 declare type UAEventType = 'connected' | 'disconnected' | 'registered' | 'registrationFailed' | 'newRTCSession' | 'incoming' | 'startSession' | 'recordPermissionsChange' | 'videoPlanChange' | 'deleteSession' | 'isRegisteredChange';
@@ -445,6 +458,7 @@ declare class PhoneOperator extends EventEmitter {
     currentSessionID: string | null;
     reRegistryPhoneTimes?: number;
     deviceIds?: deviceIdsType;
+    extraHeaders?: Array<string>;
     constructor(config: PhoneConfig, hooks?: HooksType);
     get sessions(): Map<string, Session>;
     get currentSession(): Session | null;
@@ -461,6 +475,7 @@ declare class PhoneOperator extends EventEmitter {
      * 无摄像头标识
      */
     get isNoneCamera(): boolean;
+    set isNoneCamera(value: boolean);
     /**
      * 是否已达最大通话数
      */
@@ -515,9 +530,10 @@ declare class PhoneOperator extends EventEmitter {
      * 接听
      * @param callId 通话id
      * @param option CallOptions
+     * @param allowNoneCamera 允许无摄像头接听视频电话
      * @returns 是否操作成功
      */
-    answer: (callId: string, option?: CallOptions | undefined) => Promise<Result>;
+    answer: (callId: string, option?: CallOptions | undefined, allowNoneCamera?: boolean) => Promise<Result>;
     /**
      * 挂断
      * @param callId 通话id
@@ -599,7 +615,7 @@ declare class PhoneOperator extends EventEmitter {
      * @param callId 通话id
      * @returns 是否操作成功
      */
-    audioToVideo: (callId: string) => boolean;
+    audioToVideo: (callId: string) => Promise<Result>;
     /**
      * 视频电话切到音频
      * @param callId 通话id
@@ -644,6 +660,17 @@ declare class PhoneOperator extends EventEmitter {
      * 销毁Phone，解除所有已定阅的事件，停止ua实例
      */
     destroy: () => void;
+}
+
+interface InitParams {
+    username: string;
+    secret: string;
+    pbxURL: URL | string;
+    enableLog?: boolean;
+    reRegistryPhoneTimes?: number;
+    userAgent?: userAgent;
+    deviceIds?: deviceIdsType;
+    disableCallWaiting?: boolean;
 }
 
 declare type Listener = (...arg: any[]) => void;
@@ -767,18 +794,8 @@ declare class PBXOperator extends EventEmitter {
     on: (eventName: PbxEventType, listener: (error: PBXResult) => void) => this;
 }
 
-interface InitParams {
-    username: string;
-    secret: string;
-    pbxURL: URL | string;
-    enableLog?: boolean;
-    reRegistryPhoneTimes?: number;
-    userAgent?: userAgentType;
-    deviceIds?: deviceIdsType;
-    disableCallWaiting?: boolean;
-}
 /**
- * 初始化函数
+ * 完整版初始化函数
  * @param params InitParams
  * @returns
  */
@@ -788,4 +805,4 @@ declare function init(params: InitParams): Promise<{
     destroy: () => void;
 }>;
 
-export { CallStatus, InitParams, PBXOperator, PHONE_ERROR, PhoneOperator, CommonResult as Result, Session, init };
+export { CallStatus, PBXOperator, PHONE_ERROR, PhoneOperator, CommonResult as Result, Session, init };
